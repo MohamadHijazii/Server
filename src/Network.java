@@ -11,16 +11,28 @@ public class Network {
 	public static String ip;
 	public static int port;
 	
-	public static void connect(int port) {
+	public static void connect() {
+		connect(0);
+	}
+	
+	private static void connect(int index) {
+		if(index >= DB.domains.size()) {
+			System.out.println("Sorry no more available servers :(");
+			System.exit(0);
+		}
 		try {
-			Network.port = port;
+			
+			Network.port = DB.domains.get(index).port;
 			socket = new ServerSocket(port);
+			Network.name = DB.domains.get(index).name;
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			connect(index +1);
 		}
 	}
 
+	
+	
 	public static void TransmitMessageToServer() {
 		
 	}
