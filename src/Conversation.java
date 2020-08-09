@@ -65,11 +65,16 @@ public class Conversation {
 	}
 	
 	
-	public void TransmitPuzzleToServer() {
+	
+	public void SendPuzzleToServer() {
 		
 	}
 	
 	public void TransmitPuzzleToClient() {
+		
+	}
+	
+	public void TransmitSolutionToServer() {
 		
 	}
 	
