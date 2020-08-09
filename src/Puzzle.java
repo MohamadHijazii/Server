@@ -3,11 +3,13 @@ import java.util.Random;
 public class Puzzle {
 	
 	public char []bytes;
+	public char []correct;
 	public int hash;
 	
 	//server
 	public Puzzle() {
 		bytes = new char[36];
+		correct = new char[36];
 		for(int i=0;i<36;i++) {
 			bytes[i] = '0';
 		}
@@ -15,6 +17,7 @@ public class Puzzle {
 	
 	//client
 	public Puzzle(byte []c) {
+		bytes = new char[36];
 		for(int i=0;i<36;i++) {
 			bytes[i] = (char)c[i];
 		}
@@ -48,6 +51,9 @@ public class Puzzle {
 			}
 		}
 		hash = hashOf(bytes);
+		for(int i=0;i<36;i++) {
+			correct[i] = bytes[i];
+		}
 	}
 
 	//both
@@ -82,8 +88,13 @@ public class Puzzle {
 	}
 
 	//server
-	public boolean verify() {
-		return hash == hashOf(bytes);
+	public boolean verify(Puzzle other) {
+		for(int i=0;i<36;i++) {
+			if(correct[i] != other.bytes[i]) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	//both
@@ -106,6 +117,14 @@ public class Puzzle {
 		}
 		
 		return n;
+	}
+	
+	public byte []getByteArray(){
+		byte []t = new byte[36];
+		for(int i=0;i<36;i++) {
+			t[i] = (byte) bytes[i];
+		}
+		return t;
 	}
 
 }

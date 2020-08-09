@@ -33,7 +33,9 @@ public class Receiver implements Runnable{
 					case (byte)'M':M(s); break;
 					case (byte)'T':T(s);break;
 					case (byte)'P': break;
+					case (byte)'Q':break;
 					case (byte)'S': break;
+					case (byte)'R':break;
 					case (byte)'O': break;
 				}
 				
@@ -79,7 +81,7 @@ public class Receiver implements Runnable{
 			}
 			body = s.toString();
 			Random r = new Random();
-			Conversation c = new Conversation(r.nextInt()%10000, sender, receiver, subject, body,ss);
+			Conversation c = new Conversation(r.nextInt()%10000, sender, receiver, subject, body);
 			c.add();
 			//transmit the message
 			
@@ -126,7 +128,7 @@ public class Receiver implements Runnable{
 			}
 			body = s.toString();
 			Random r = new Random();
-			Conversation c = new Conversation(id, sender, receiver, subject, body,ss);
+			Conversation c = new Conversation(id, sender, receiver, subject, body);
 			c.add();
 			Puzzle p = new Puzzle();
 			c.puzzle = p;
