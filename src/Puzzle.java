@@ -5,7 +5,6 @@ public class Puzzle {
 	public char []bytes;
 	public char []correct;
 	public int hash;
-	
 	//server
 	public Puzzle() {
 		bytes = new char[36];

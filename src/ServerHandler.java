@@ -34,7 +34,14 @@ public class ServerHandler extends Thread {
 				c = (char) sin.readByte();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				try {
+					otherServer.close();
+					break;
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					//e1.printStackTrace();
+				}
 			}
 			switch (c) {
 			case 'T':
@@ -42,8 +49,28 @@ public class ServerHandler extends Thread {
 				break;
 			case 'P':P();break;
 			case 'R':R();break;
+			case 'F':F();break;
 			}
 		}
+	}
+	
+	
+	private void F() {
+		try {
+			int id = sin.readInt();
+			boolean result = sin.readBoolean();
+			int len = sin.readInt();
+			StringBuilder s = new StringBuilder();
+			while(len -- !=0) {
+				s.append((char)sin.readByte());
+			}
+			ClientHandler c = Main.getClientWithID(id);
+			System.out.println("(7) Received the result ..");
+			c.sendFinalResultToTheClient(result,s.toString());
+		}catch(Exception e) {
+			
+		}
+		
 	}
 
 	private void P() {
@@ -99,7 +126,6 @@ public class ServerHandler extends Thread {
 			System.out.println("(2) Message transmited for me successfully");
 			Conversation c = new Conversation(id, sender, receiver, subject, body);
 			conversations.add(c);
-			System.out.println(c + " is added!");
 			//generate the puzzle
 			Puzzle puzzle = new Puzzle();
 			puzzle.generate();
@@ -128,8 +154,31 @@ public class ServerHandler extends Thread {
 		Puzzle solution = new Puzzle(puzzle);
 		Conversation con = getConversation(id);
 		System.out.println("(6) Received Solution and verifying it");
+		boolean result = con.puzzle.verify(solution);
 		System.out.println("Result: " +con.puzzle.verify(solution));
 		//save the ape in the inbox if true and return the result anyway
+		try {
+			sout.write('F');
+			sout.writeInt(id);
+			String correct = "Email is sent Successfully";
+			String wrong = "Wrong solution";
+		if(result) {
+			sout.writeBoolean(true);
+			sout.writeInt(correct.length());
+			sout.write(correct.getBytes());
+			//store the message in TPOP server
+			Message m = new Message(con.sender, con.subject, con.body);
+			Main.Tpop.addMessage(con.receiver, m);
+		}
+		else {
+			sout.writeBoolean(false);
+			sout.writeInt(wrong.length());
+			sout.write(wrong.getBytes());
+		}
+		System.out.println("(7) Sending the result to the server ..");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void TransmitMessageToServer(int id, String sender, String receiver, String subject, String body) {
